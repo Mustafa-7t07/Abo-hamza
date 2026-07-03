@@ -299,8 +299,168 @@ const DB = {
     storageSet('jw_tasks', JSON.stringify(state.tasks));
     storageSet('jw_issues', JSON.stringify(state.issues));
     storageSet('jw_zones', JSON.stringify(state.zones));
+    scheduleDriveSync();
   }
 };
+
+/* ======================= GOOGLE DRIVE SYNC ======================= */
+const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+let gsiTokenClient = null;
+let driveAccessToken = null;
+let driveTokenExpiry = 0;
+let driveSyncTimer = null;
+let driveStatus = 'idle'; // idle | syncing | ok | error
+
+function driveClientId(){ return localStorage.getItem('jw_drive_client_id') || ''; }
+function driveConnected(){ return localStorage.getItem('jw_drive_connected') === '1' && !!driveClientId(); }
+
+function loadGsi(cb){
+  if(window.google && window.google.accounts){ cb(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.async = true; s.defer = true;
+  s.onload = cb;
+  s.onerror = ()=>cb(false);
+  document.head.appendChild(s);
+}
+
+function initDriveAuth(interactive, cb){
+  const cid = driveClientId();
+  if(!cid){ cb(false); return; }
+  loadGsi(()=>{
+    if(!window.google || !window.google.accounts){ cb(false); return; }
+    if(!gsiTokenClient || gsiTokenClient._cid !== cid){
+      gsiTokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: cid,
+        scope: DRIVE_SCOPE,
+        callback: (resp)=>{
+          if(resp.error){ cb(false); return; }
+          driveAccessToken = resp.access_token;
+          driveTokenExpiry = Date.now() + (resp.expires_in*1000) - 60000;
+          localStorage.setItem('jw_drive_connected','1');
+          cb(true);
+        }
+      });
+      gsiTokenClient._cid = cid;
+    }
+    try{
+      gsiTokenClient.requestAccessToken({ prompt: interactive ? 'consent' : '' });
+    }catch(e){ cb(false); }
+  });
+}
+
+function ensureDriveToken(cb){
+  if(driveAccessToken && Date.now() < driveTokenExpiry){ cb(true); return; }
+  initDriveAuth(false, cb);
+}
+
+function connectDrive(){
+  const cidInput = document.getElementById('driveClientId');
+  if(cidInput){
+    const v = cidInput.value.trim();
+    if(!v){ toast('الصق معرف Client ID أول'); return; }
+    localStorage.setItem('jw_drive_client_id', v);
+  }
+  if(!driveClientId()){ toast('الصق معرف Client ID أول'); return; }
+  driveStatus = 'syncing'; renderSettings();
+  initDriveAuth(true, (ok)=>{
+    if(ok){
+      toast('تم الاتصال بنجاح، جاري رفع أول نسخة...');
+      driveSync(true);
+    } else {
+      driveStatus = 'error';
+      toast('فشل الاتصال، تأكد من Client ID وإعدادات Google Cloud');
+      renderSettings();
+    }
+  });
+}
+
+function disconnectDrive(){
+  if(driveAccessToken){
+    try{ google.accounts.oauth2.revoke(driveAccessToken, ()=>{}); }catch(e){}
+  }
+  driveAccessToken = null; driveTokenExpiry = 0;
+  localStorage.removeItem('jw_drive_connected');
+  localStorage.removeItem('jw_drive_file_id');
+  driveStatus = 'idle';
+  toast('تم قطع الاتصال');
+  renderSettings();
+}
+
+function scheduleDriveSync(){
+  if(!driveConnected()) return;
+  clearTimeout(driveSyncTimer);
+  driveSyncTimer = setTimeout(()=>driveSync(false), 2500);
+}
+
+async function driveSync(manual){
+  if(!driveConnected()){ if(manual) toast('غير متصل بـ Drive'); return; }
+  driveStatus = 'syncing';
+  if(document.getElementById('view-settings').classList.contains('active')) renderSettings();
+  ensureDriveToken(async (ok)=>{
+    if(!ok){
+      driveStatus = 'error';
+      if(manual) toast('يحتاج إعادة تسجيل الدخول لـ Google Drive');
+      renderSettings();
+      return;
+    }
+    try{
+      const content = JSON.stringify(state);
+      const fileId = localStorage.getItem('jw_drive_file_id');
+      let res;
+      if(fileId){
+        res = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+          method:'PATCH',
+          headers:{ 'Authorization':'Bearer '+driveAccessToken, 'Content-Type':'application/json' },
+          body: content
+        });
+        if(res.status===404){ localStorage.removeItem('jw_drive_file_id'); return driveSync(manual); }
+      } else {
+        const boundary='jawlati_boundary_xyz';
+        const metadata = { name:'jawlati-backup.json', mimeType:'application/json' };
+        const body = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n--${boundary}\r\nContent-Type: application/json\r\n\r\n${content}\r\n--${boundary}--`;
+        res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+          method:'POST',
+          headers:{ 'Authorization':'Bearer '+driveAccessToken, 'Content-Type':`multipart/related; boundary=${boundary}` },
+          body
+        });
+      }
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      if(data.id) localStorage.setItem('jw_drive_file_id', data.id);
+      localStorage.setItem('jw_drive_last_sync', new Date().toISOString());
+      driveStatus = 'ok';
+      if(manual) toast('تمت المزامنة مع Drive');
+    }catch(e){
+      driveStatus = 'error';
+      if(manual) toast('فشلت المزامنة، حاول مرة ثانية');
+    }
+    renderSettings();
+  });
+}
+
+function restoreFromDrive(){
+  if(!driveConnected()){ toast('اربط Drive أول'); return; }
+  const fileId = localStorage.getItem('jw_drive_file_id');
+  if(!fileId){ toast('ما توجد نسخة محفوظة بعد'); return; }
+  if(!confirm('سيتم استبدال كل البيانات الحالية بالنسخة من Drive. متابعة؟')) return;
+  ensureDriveToken(async (ok)=>{
+    if(!ok){ toast('يحتاج إعادة تسجيل الدخول'); return; }
+    try{
+      const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+        headers:{ 'Authorization':'Bearer '+driveAccessToken }
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      state = {
+        customers: data.customers||[], notes: data.notes||[], tasks: data.tasks||[],
+        issues: data.issues||[], zones: data.zones||['الكاظمية','الشعلة','الحرية']
+      };
+      DB.save(); toast('تم الاسترجاع من Drive'); navTo('home');
+    }catch(e){ toast('فشل الاسترجاع'); }
+  });
+}
+
 let state;
 try{
   state = DB.load();
@@ -796,9 +956,29 @@ function renderSettings(){
   const kb = Math.round(new Blob([raw]).size/1024);
   const pct = Math.min(100, Math.round(kb/5000*100));
   el.innerHTML = `
-    <div class="section-title">📦 النسخ الاحتياطي</div>
+    <div class="section-title">☁️ النسخ الاحتياطي التلقائي (Google Drive)</div>
     <div class="card">
-      <div class="hint">بياناتك محفوظة داخل هذا المتصفح فقط على هذا الجهاز. يُنصح بأخذ نسخة احتياطية دورياً.</div>
+      ${driveConnected() ? `
+        <div class="hint" style="margin-top:0">
+          ${driveStatus==='syncing' ? '🔄 جاري المزامنة...' : driveStatus==='error' ? '⚠️ فشلت آخر محاولة مزامنة' : '✅ متصل بـ Google Drive'}
+        </div>
+        <div class="hint">آخر نسخة: ${localStorage.getItem('jw_drive_last_sync') ? new Date(localStorage.getItem('jw_drive_last_sync')).toLocaleString('ar-EG') : 'لم تتم بعد'}</div>
+        <div class="btn-row">
+          <button class="btn btn-primary" style="flex:1" onclick="driveSync(true)">🔄 مزامنة الآن</button>
+          <button class="btn btn-outline" style="flex:1" onclick="restoreFromDrive()">⭳ استرجاع من Drive</button>
+        </div>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="disconnectDrive()">قطع الاتصال</button>
+      ` : `
+        <div class="hint" style="margin-top:0">اربط حساب Google الخاص بك ليتم رفع نسخة احتياطية تلقائياً بعد كل تعديل.</div>
+        <label>Google Client ID</label>
+        <input id="driveClientId" placeholder="xxxxx.apps.googleusercontent.com" value="${escapeAttr(driveClientId())}">
+        <button class="btn btn-primary btn-block" style="margin-top:12px" onclick="connectDrive()">🔗 ربط Google Drive</button>
+      `}
+    </div>
+
+    <div class="section-title">📦 نسخة احتياطية يدوية (ملف)</div>
+    <div class="card">
+      <div class="hint" style="margin-top:0">بديل بدون إنترنت: يحفظ ملف على جهازك تقدر تنقله يدوياً.</div>
       <div class="storage-bar"><div class="storage-fill" style="width:${pct}%"></div></div>
       <div class="hint">المساحة المستخدمة تقريباً: ${kb} كيلوبايت</div>
       <div class="btn-row">
