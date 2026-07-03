@@ -406,7 +406,7 @@ async function driveSync(manual){
     }
     try{
       const content = JSON.stringify(state);
-      const fileId = localStorage.getItem('jw_drive_file_id');
+      let fileId = await getDriveFileId();
       let res;
       if(fileId){
         res = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
@@ -414,7 +414,7 @@ async function driveSync(manual){
           headers:{ 'Authorization':'Bearer '+driveAccessToken, 'Content-Type':'application/json' },
           body: content
         });
-        if(res.status===404){ localStorage.removeItem('jw_drive_file_id'); return driveSync(manual); }
+        if(res.status===404){ localStorage.removeItem('jw_drive_file_id'); driveStatus='syncing'; return driveSync(manual); }
       } else {
         const boundary='jawlati_boundary_xyz';
         const metadata = { name:'jawlati-backup.json', mimeType:'application/json' };
@@ -439,14 +439,31 @@ async function driveSync(manual){
   });
 }
  
+async function findDriveFileByName(){
+  const res = await fetch("https://www.googleapis.com/drive/v3/files?q=" + encodeURIComponent("name='jawlati-backup.json' and trashed=false") + "&fields=files(id,name,modifiedTime)&spaces=drive&orderBy=modifiedTime desc", {
+    headers:{ 'Authorization':'Bearer '+driveAccessToken }
+  });
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const data = await res.json();
+  return (data.files && data.files.length) ? data.files[0].id : null;
+}
+ 
+async function getDriveFileId(){
+  let fileId = localStorage.getItem('jw_drive_file_id');
+  if(fileId) return fileId;
+  fileId = await findDriveFileByName();
+  if(fileId) localStorage.setItem('jw_drive_file_id', fileId);
+  return fileId;
+}
+ 
 function restoreFromDrive(){
   if(!driveConnected()){ toast('اربط Drive أول'); return; }
-  const fileId = localStorage.getItem('jw_drive_file_id');
-  if(!fileId){ toast('ما توجد نسخة محفوظة بعد'); return; }
   if(!confirm('سيتم استبدال كل البيانات الحالية بالنسخة من Drive. متابعة؟')) return;
   ensureDriveToken(async (ok)=>{
     if(!ok){ toast('يحتاج إعادة تسجيل الدخول'); return; }
     try{
+      const fileId = await getDriveFileId();
+      if(!fileId){ toast('ما توجد نسخة محفوظة بعد على هذا الحساب'); return; }
       const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
         headers:{ 'Authorization':'Bearer '+driveAccessToken }
       });
