@@ -41,7 +41,7 @@ body{
   overscroll-behavior-y: contain;
 }
 #app{max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;background:var(--bg);}
-
+ 
 .topbar{
   padding:calc(14px + var(--safe-top)) 18px 14px;
   background:linear-gradient(135deg,var(--primary-dark),var(--primary));
@@ -54,13 +54,13 @@ body{
   display:inline-flex;align-items:center;gap:6px;color:#fff;background:rgba(255,255,255,.12);
   border:none;border-radius:10px;padding:7px 12px;font-size:14px;margin-bottom:8px;font-family:inherit;
 }
-
+ 
 main{flex:1;padding:16px 14px calc(96px + var(--safe-bottom));}
-
+ 
 .view{display:none;}
 .view.active{display:block;animation:fadeIn .18s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
-
+ 
 .card{
   background:var(--surface);
   border:1px solid var(--border);
@@ -78,11 +78,11 @@ main{flex:1;padding:16px 14px calc(96px + var(--safe-bottom));}
 }
 .section-title.danger{color:var(--danger);}
 .section-title.danger .count{background:var(--danger);}
-
+ 
 .empty{
   text-align:center;color:var(--muted);font-size:13px;padding:26px 10px;
 }
-
+ 
 .btn{
   border:none;border-radius:11px;padding:12px 16px;font-size:14.5px;font-weight:700;
   font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;
@@ -96,7 +96,7 @@ main{flex:1;padding:16px 14px calc(96px + var(--safe-bottom));}
 .btn-sm{padding:8px 12px;font-size:13px;border-radius:9px;}
 .btn-block{width:100%;}
 .btn-row{display:flex;gap:8px;margin-top:10px;}
-
+ 
 input,textarea,select{
   width:100%;font-family:inherit;font-size:15px;padding:11px 12px;border-radius:10px;
   border:1.5px solid var(--border);background:#fff;color:var(--text);margin-top:6px;
@@ -106,14 +106,14 @@ label{font-size:13px;font-weight:700;color:var(--muted);display:block;margin-top
 label:first-child{margin-top:0;}
 .field-row{display:flex;gap:10px;}
 .field-row>div{flex:1;}
-
+ 
 .zone-badge{
   font-size:11px;font-weight:800;color:#fff;padding:3px 9px;border-radius:20px;display:inline-block;
 }
 .zone-1{background:var(--zone1);}
 .zone-2{background:var(--zone2);}
 .zone-3{background:var(--zone3);}
-
+ 
 .task-item,.note-item,.issue-item{
   display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);
 }
@@ -130,7 +130,7 @@ label:first-child{margin-top:0;}
 .item-meta{font-size:12.5px;color:var(--muted);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
 .item-date{font-size:12px;color:var(--muted);white-space:nowrap;}
 .overdue-tag{color:var(--danger);font-weight:800;}
-
+ 
 .customer-card{
   display:flex;justify-content:space-between;align-items:center;padding:14px;
   background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;
@@ -138,13 +138,13 @@ label:first-child{margin-top:0;}
 .customer-card .name{font-size:15.5px;font-weight:800;}
 .customer-card .phone{font-size:12.5px;color:var(--muted);margin-top:3px;direction:ltr;text-align:right;}
 .chev{color:var(--muted);font-size:20px;}
-
+ 
 .issue-banner{
   background:var(--danger-light);border:1px solid #F3C6C1;border-radius:var(--radius);
   padding:12px 14px;margin-bottom:10px;
 }
 .issue-banner .item-title{color:var(--danger);}
-
+ 
 .fab{
   position:fixed;bottom:calc(86px + var(--safe-bottom));left:50%;transform:translateX(-50%);
   z-index:30; max-width:520px; width:calc(100% - 28px);
@@ -162,18 +162,18 @@ label:first-child{margin-top:0;}
 .nav-btn svg{width:22px;height:22px;stroke:var(--muted);fill:none;stroke-width:1.8;}
 .nav-btn.active{color:var(--primary);}
 .nav-btn.active svg{stroke:var(--primary);}
-
+ 
 .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px;}
 .tab{
   background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;
   font-size:13px;font-weight:700;white-space:nowrap;color:var(--muted);
 }
 .tab.active{background:var(--primary);border-color:var(--primary);color:#fff;}
-
+ 
 .searchbar{position:relative;margin-bottom:12px;}
 .searchbar input{padding-right:38px;}
 .searchbar svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;stroke:var(--muted);fill:none;stroke-width:2;}
-
+ 
 .modal-overlay{
   position:fixed;inset:0;background:rgba(15,20,18,.5);z-index:100;
   display:flex;align-items:flex-end;justify-content:center;
@@ -226,12 +226,12 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
 </head>
 <body>
 <div id="app">
-
+ 
   <header class="topbar" id="topbar">
     <div class="title" id="topbarTitle">جولاتي</div>
     <div class="sub" id="topbarSub"></div>
   </header>
-
+ 
   <main>
     <!-- HOME -->
     <section class="view active" id="view-home"></section>
@@ -244,7 +244,7 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
     <!-- SETTINGS -->
     <section class="view" id="view-settings"></section>
   </main>
-
+ 
   <nav class="bottom-nav">
     <button class="nav-btn active" data-nav="home">
       <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
@@ -263,17 +263,17 @@ select{appearance:none;-webkit-appearance:none;background-image:url("data:image/
       الإعدادات
     </button>
   </nav>
-
+ 
   <div class="modal-overlay hidden" id="modalOverlay">
     <div class="modal" id="modalBody"></div>
   </div>
 </div>
-
+ 
 <script>
 /* ======================= DATA LAYER ======================= */
 let STORAGE_OK = true;
 let memoryStore = {}; // fallback if localStorage is blocked (e.g. some file:// contexts)
-
+ 
 function storageGet(key){
   try{ return localStorage.getItem(key); }
   catch(e){ STORAGE_OK = false; return memoryStore[key] || null; }
@@ -282,7 +282,7 @@ function storageSet(key, val){
   try{ localStorage.setItem(key, val); }
   catch(e){ STORAGE_OK = false; memoryStore[key] = val; }
 }
-
+ 
 const DB = {
   load(){
     return {
@@ -302,7 +302,7 @@ const DB = {
     scheduleDriveSync();
   }
 };
-
+ 
 /* ======================= GOOGLE DRIVE SYNC ======================= */
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 let gsiTokenClient = null;
@@ -310,10 +310,10 @@ let driveAccessToken = null;
 let driveTokenExpiry = 0;
 let driveSyncTimer = null;
 let driveStatus = 'idle'; // idle | syncing | ok | error
-
+ 
 function driveClientId(){ return localStorage.getItem('jw_drive_client_id') || ''; }
 function driveConnected(){ return localStorage.getItem('jw_drive_connected') === '1' && !!driveClientId(); }
-
+ 
 function loadGsi(cb){
   if(window.google && window.google.accounts){ cb(); return; }
   const s = document.createElement('script');
@@ -323,7 +323,7 @@ function loadGsi(cb){
   s.onerror = ()=>cb(false);
   document.head.appendChild(s);
 }
-
+ 
 function initDriveAuth(interactive, cb){
   const cid = driveClientId();
   if(!cid){ cb(false); return; }
@@ -348,12 +348,12 @@ function initDriveAuth(interactive, cb){
     }catch(e){ cb(false); }
   });
 }
-
+ 
 function ensureDriveToken(cb){
   if(driveAccessToken && Date.now() < driveTokenExpiry){ cb(true); return; }
   initDriveAuth(false, cb);
 }
-
+ 
 function connectDrive(){
   const cidInput = document.getElementById('driveClientId');
   if(cidInput){
@@ -374,7 +374,7 @@ function connectDrive(){
     }
   });
 }
-
+ 
 function disconnectDrive(){
   if(driveAccessToken){
     try{ google.accounts.oauth2.revoke(driveAccessToken, ()=>{}); }catch(e){}
@@ -386,13 +386,13 @@ function disconnectDrive(){
   toast('تم قطع الاتصال');
   renderSettings();
 }
-
+ 
 function scheduleDriveSync(){
   if(!driveConnected()) return;
   clearTimeout(driveSyncTimer);
   driveSyncTimer = setTimeout(()=>driveSync(false), 2500);
 }
-
+ 
 async function driveSync(manual){
   if(!driveConnected()){ if(manual) toast('غير متصل بـ Drive'); return; }
   driveStatus = 'syncing';
@@ -438,7 +438,7 @@ async function driveSync(manual){
     renderSettings();
   });
 }
-
+ 
 function restoreFromDrive(){
   if(!driveConnected()){ toast('اربط Drive أول'); return; }
   const fileId = localStorage.getItem('jw_drive_file_id');
@@ -460,7 +460,7 @@ function restoreFromDrive(){
     }catch(e){ toast('فشل الاسترجاع'); }
   });
 }
-
+ 
 let state;
 try{
   state = DB.load();
@@ -470,7 +470,7 @@ try{
 }
 let currentDetailId = null;
 let customersZoneFilter = 'all';
-
+ 
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
 function fmtDate(iso){
@@ -495,7 +495,7 @@ function toast(msg){
   document.body.appendChild(t); setTimeout(()=>t.remove(),1800);
 }
 function svgCheck(){ return '<svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>'; }
-
+ 
 /* ======================= NAVIGATION ======================= */
 function navTo(view){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -514,7 +514,7 @@ function navTo(view){
   window.scrollTo(0,0);
 }
 document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>navTo(b.dataset.nav)));
-
+ 
 /* ======================= MODAL ======================= */
 function openModal(html){
   document.getElementById('modalBody').innerHTML = html;
@@ -527,29 +527,29 @@ function closeModal(){
 document.getElementById('modalOverlay').addEventListener('click', e=>{
   if(e.target.id==='modalOverlay') closeModal();
 });
-
+ 
 /* ======================= HOME ======================= */
 function renderHome(){
   const el = document.getElementById('view-home');
   const today = todayISO();
   const weekday = new Date().getDay();
-
+ 
   const openIssues = state.issues.filter(i=>!i.resolved);
   const dueTasks = state.tasks.filter(t=>!t.done && t.date<=today).sort((a,b)=>a.date.localeCompare(b.date));
   const recurringToday = state.customers.filter(c=>{
     if(!c.recurDays || !c.recurDays.includes(weekday)) return false;
     return !state.notes.some(n=>n.customerId===c.id && n.date===today);
   });
-
+ 
   let html = '';
-
+ 
   if(!STORAGE_OK){
     html += `<div class="card" style="background:var(--warning-light);border-color:#EAD9AE">
       <div class="item-title" style="color:var(--warning)">⚠️ التخزين الدائم غير مفعّل بهذه الطريقة بالفتح</div>
       <div class="hint">أي بيانات تضيفها الحين رح تضيع لما تسكر الصفحة. لازم تفتح التطبيق عبر Safari بشكل مباشر (بعد إضافته للشاشة الرئيسية) وليس من داخل معاينة الملفات. إذا استمرت المشكلة حتى بعد فتحه من الشاشة الرئيسية، خبر المطوّر.</div>
     </div>`;
   }
-
+ 
   // Issues banner
   html += `<div class="section-title danger">⚠️ مشاكل عالقة <span class="count">${openIssues.length}</span></div>`;
   if(openIssues.length===0){
@@ -564,7 +564,7 @@ function renderHome(){
       </div>`;
     }).join('') + `</div>`;
   }
-
+ 
   // Tasks
   html += `<div class="section-title">📋 مهام اليوم والمتأخرة <span class="count">${dueTasks.length}</span></div>`;
   if(dueTasks.length===0){
@@ -585,7 +585,7 @@ function renderHome(){
       </div>`;
     }).join('') + `</div>`;
   }
-
+ 
   // Recurring visits today
   html += `<div class="section-title">🔁 زيارات معتادة اليوم <span class="count">${recurringToday.length}</span></div>`;
   if(recurringToday.length===0){
@@ -600,7 +600,7 @@ function renderHome(){
         <div class="chev">‹</div>
       </div>`).join('') + `</div>`;
   }
-
+ 
   el.innerHTML = html;
 }
 function toggleTask(id){
@@ -615,7 +615,7 @@ function resolveIssue(id){
   DB.save(); renderHome(); toast('تم إغلاق المشكلة');
   if(document.getElementById('view-issues').classList.contains('active')) renderIssues();
 }
-
+ 
 /* ======================= CUSTOMERS LIST ======================= */
 function renderCustomers(){
   const el = document.getElementById('view-customers');
@@ -655,7 +655,7 @@ function filterCustomerList(){
     </div>`;
   }).join('');
 }
-
+ 
 function openAddCustomer(){
   openModal(`
     <div class="modal-head"><h3>زبون جديد</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
@@ -694,7 +694,7 @@ function saveCustomer(){
   state.customers.push(c); DB.save();
   closeModal(); toast('تمت إضافة الزبون'); renderCustomers();
 }
-
+ 
 /* ======================= CUSTOMER DETAIL ======================= */
 function openDetail(id){
   currentDetailId = id;
@@ -707,17 +707,17 @@ function renderDetail(id){
   if(!c){ el.innerHTML = '<div class="card empty">لم يتم العثور على الزبون</div>'; return; }
   document.getElementById('topbarTitle').textContent = c.name;
   document.getElementById('topbarSub').textContent = c.zone;
-
+ 
   const isUrl = /^https?:\/\//.test(c.location||'');
   const mapsSearch = 'https://www.google.com/maps/search/' + encodeURIComponent(c.location || c.name);
-
+ 
   const notes = state.notes.filter(n=>n.customerId===id);
   const tasks = state.tasks.filter(t=>t.customerId===id);
   const timeline = [
     ...notes.map(n=>({...n,_type:'note'})),
     ...tasks.map(t=>({...t,_type:'task'}))
   ].sort((a,b)=> (b.date||'').localeCompare(a.date||''));
-
+ 
   let html = `
     <button class="back-btn" style="background:none;border:none;color:var(--primary);font-weight:700;padding:0 0 10px;font-family:inherit" onclick="navTo('customers')">‹ رجوع للزبائن</button>
     <div class="card">
@@ -735,9 +735,9 @@ function renderDetail(id){
       <button class="btn btn-ghost" style="flex:1" onclick="openAddIssue('${id}')">⚠️ إبلاغ عن مشكلة</button>
       <button class="btn btn-ghost" style="flex:1" onclick="editCustomer('${id}')">✎ تعديل البيانات</button>
     </div>
-
+ 
     <div class="section-title">📖 سجل الزيارات والمهام</div>`;
-
+ 
   if(timeline.length===0){
     html += `<div class="card empty">لا يوجد سجل بعد. سجّل أول زيارة الآن.</div>`;
   } else {
@@ -803,7 +803,7 @@ function saveEditCustomer(id){
   c.recurDays = Array.from(document.querySelectorAll('#dayPicker .day-chip.on')).map(b=>+b.dataset.day);
   DB.save(); closeModal(); toast('تم التحديث'); renderDetail(id);
 }
-
+ 
 /* ======================= ADD NOTE (with photos + optional follow-up task) ======================= */
 let tempImages = [];
 function openAddNote(customerId){
@@ -865,7 +865,7 @@ function saveNote(customerId){
   const date = document.getElementById('n_date').value || todayISO();
   if(!text && tempImages.length===0){ toast('اكتب ملاحظة أو أضف صورة'); return; }
   state.notes.push({ id: uid(), customerId, date, text, images: tempImages.slice(), createdAt: new Date().toISOString() });
-
+ 
   if(document.getElementById('n_followup').checked){
     const tText = document.getElementById('n_taskText').value.trim();
     const tDate = document.getElementById('n_taskDate').value;
@@ -876,7 +876,7 @@ function saveNote(customerId){
   DB.save(); closeModal(); toast('تم حفظ الزيارة');
   renderDetail(customerId); renderHome();
 }
-
+ 
 /* ======================= ADD TASK ======================= */
 function openAddTask(customerId){
   const options = state.customers.map(c=>`<option value="${c.id}" ${c.id===customerId?'selected':''}>${escapeHtml(c.name)}</option>`).join('');
@@ -901,7 +901,7 @@ function saveTask(){
   renderHome();
   if(currentDetailId) renderDetail(currentDetailId);
 }
-
+ 
 /* ======================= ISSUES ======================= */
 function openAddIssue(customerId){
   const options = state.customers.map(c=>`<option value="${c.id}" ${c.id===customerId?'selected':''}>${escapeHtml(c.name)}</option>`).join('');
@@ -937,7 +937,7 @@ function renderIssues(){
       <div class="btn-row"><button class="btn btn-primary btn-sm" onclick="resolveIssue('${i.id}')">✓ تم الحل</button></div>
     </div>`;
   }).join('')+`</div>` : `<div class="card empty">لا مشاكل مفتوحة 🎉</div>`;
-
+ 
   html += `<div class="section-title">محلولة مؤخراً</div>`;
   html += resolved.length? `<div class="card">`+resolved.map(i=>{
     const c = customerById(i.customerId);
@@ -948,7 +948,7 @@ function renderIssues(){
   }).join('')+`</div>` : `<div class="card empty">لا يوجد سجل بعد</div>`;
   el.innerHTML = html;
 }
-
+ 
 /* ======================= SETTINGS ======================= */
 function renderSettings(){
   const el = document.getElementById('view-settings');
@@ -975,7 +975,7 @@ function renderSettings(){
         <button class="btn btn-primary btn-block" style="margin-top:12px" onclick="connectDrive()">🔗 ربط Google Drive</button>
       `}
     </div>
-
+ 
     <div class="section-title">📦 نسخة احتياطية يدوية (ملف)</div>
     <div class="card">
       <div class="hint" style="margin-top:0">بديل بدون إنترنت: يحفظ ملف على جهازك تقدر تنقله يدوياً.</div>
@@ -987,7 +987,7 @@ function renderSettings(){
         <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)">
       </div>
     </div>
-
+ 
     <div class="section-title">🗺️ المناطق</div>
     <div class="card">
       <div id="zoneList">${state.zones.map((z,i)=>`
@@ -1000,7 +1000,7 @@ function renderSettings(){
         <button class="btn btn-primary" onclick="addZone()">إضافة</button>
       </div>
     </div>
-
+ 
     <div class="section-title">ℹ️ ملاحظة</div>
     <div class="card hint">
       هذا التطبيق يعمل بدون إنترنت بالكامل. لتثبيته كأيقونة على شاشتك الرئيسية: افتحه عبر Safari، ثم زر المشاركة ← "إضافة إلى الشاشة الرئيسية". لأن الإشعارات الفورية تحتاج اتصال إنترنت وخادم، هذا التطبيق يعرض بدلاً منها المهام المستحقة بشكل بارز أعلى الصفحة الرئيسية عند كل فتح.
@@ -1045,16 +1045,16 @@ function importBackup(e){
   reader.readAsText(file);
   e.target.value='';
 }
-
+ 
 /* ======================= UTIL ======================= */
 function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function escapeAttr(s){ return escapeHtml(s); }
-
+ 
 /* ======================= SEED (first run only) ======================= */
 if(state.customers.length===0 && state.notes.length===0 && localStorage.getItem('jw_seeded')!=='1'){
   localStorage.setItem('jw_seeded','1');
 }
-
+ 
 try{
   navTo('home');
 }catch(e){
@@ -1068,3 +1068,4 @@ try{
 </script>
 </body>
 </html>
+ 
